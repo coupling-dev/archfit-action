@@ -1,9 +1,15 @@
 # archfit-action
 
-Run [archfit](https://github.com/coupling-dev/archfit) on your GitHub Actions
-runner and send the result to the archfit GitHub App. The Action checks a change
-once with the policy from the target branch. The App receives the result; it does
-not run the engine on your code.
+**Tests can pass while a change adds a forbidden dependency, a new cycle, or a
+copy of code another module owns.**
+
+When a rule is in your way, you ask an owner: ask once, and the answer is
+remembered for the next change.
+
+The Archfit Action checks the change against the target branch's policy on your
+GitHub Actions runner and, when configured, sends the result to the Archfit App.
+See the [archfit README](https://github.com/coupling-dev/archfit#readme) for how
+the check and request work.
 
 ## Workflow
 
@@ -29,8 +35,8 @@ jobs:
     steps:
       - uses: coupling-dev/archfit-action@<40-hex-commit> # v4.0.0
         with:
-          endpoint: https://archfit.example
-          audience: https://archfit.example
+          endpoint: https://app.coupling.dev
+          audience: https://app.coupling.dev
 ```
 
 Replace `main`, the endpoint, and the Action placeholder with the values for your
@@ -53,7 +59,7 @@ commit only after the App lists it and the engine digests.
 ## Protect the default branch
 
 Configure a branch ruleset that requires pull requests, has zero required GitHub
-approvals, and requires `archfit/gate` from the archfit App. Do not make the App a
+approvals, and requires `archfit/gate` from the Archfit App. Do not make the App a
 bypass actor. Owners approve policy requests in the App; an administrator bypass
 is an emergency path, not an archfit pass. On eligible organization-owned private
 or internal repositories, a push ruleset can restrict the policy path as additional
