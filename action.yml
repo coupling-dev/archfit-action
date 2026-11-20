@@ -1,6 +1,6 @@
 name: archfit
 description: Run the pinned archfit engine image on this change and send its result to the archfit GitHub App
-author: alexei-led
+author: coupling-dev
 branding:
   icon: git-branch
   color: purple

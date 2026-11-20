@@ -1,4 +1,4 @@
-module github.com/alexei-led/archfit-action/tests/validate
+module github.com/coupling-dev/archfit-action/tests/validate
 
 go 1.26
 
