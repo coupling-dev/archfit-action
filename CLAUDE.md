@@ -10,11 +10,11 @@ between them.
 
 | Repo                                               | Owns                                                                                             |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| [`archfit`](https://github.com/alexei-led/archfit) | engine, CLI, images, the result contract (Apache-2.0)                                            |
+| [`archfit`](https://github.com/coupling-dev/archfit) | engine, CLI, images, the result contract (Apache-2.0)                                            |
 | `archfit-action` (this one)                        | the execution and upload adapter (Apache-2.0)                                                    |
 | `archfit-app`                                      | tenancy, approved policy, requests and answers, PR feedback, **the envelope contract** (private) |
 
-Start here: new work follows the [Archfit 4 design](https://github.com/alexei-led/archfit/blob/main/docs/plans/20261110-archfit-4-architecture-change-control.md)
+Start here: new work follows the [Archfit 4 design](https://github.com/coupling-dev/archfit/blob/main/docs/plans/20261110-archfit-4-architecture-change-control.md)
 in `archfit`, the current design for the engine, this Action and the App.
 
 ## Layout

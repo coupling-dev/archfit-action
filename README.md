@@ -1,6 +1,6 @@
 # archfit-action
 
-Run [archfit](https://github.com/alexei-led/archfit) on your GitHub Actions
+Run [archfit](https://github.com/coupling-dev/archfit) on your GitHub Actions
 runner and send the result to the archfit GitHub App. The Action checks a change
 once with the policy from the target branch. The App receives the result; it does
 not run the engine on your code.
@@ -27,7 +27,7 @@ jobs:
   archfit:
     runs-on: ubuntu-latest
     steps:
-      - uses: alexei-led/archfit-action@<40-hex-commit> # v4.0.0
+      - uses: coupling-dev/archfit-action@<40-hex-commit> # v4.0.0
         with:
           endpoint: https://archfit.example
           audience: https://archfit.example
