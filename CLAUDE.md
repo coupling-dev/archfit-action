@@ -14,7 +14,7 @@ between them.
 | `archfit-action` (this one)                        | the execution and upload adapter (Apache-2.0)                                                    |
 | `archfit-app`                                      | tenancy, approved policy, requests and answers, PR feedback, **the envelope contract** (private) |
 
-Start here: new work follows the [Archfit 4 design](https://github.com/coupling-dev/archfit/blob/main/docs/plans/20261110-archfit-4-architecture-change-control.md)
+Start here: new work follows the [change-control design](https://github.com/coupling-dev/archfit/blob/main/docs/plans/20261110-archfit-4-architecture-change-control.md)
 in `archfit`, the current design for the engine, this Action and the App.
 
 ## Layout
@@ -124,4 +124,4 @@ in `archfit`, the current design for the engine, this Action and the App.
   they replay are ones the engine emitted, hash-pinned in `tests/fixtures/SOURCE.md`
   with the engine commit, never a stub written to match this action.
 - A new check proves it can fail: the validator has known-bad envelopes it must reject.
-- Releases are tagged `vN`; the App pins a commit SHA.
+- Releases are tagged `vX.Y.Z` (from `v0.9.0`); the App pins a commit SHA.

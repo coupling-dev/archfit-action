@@ -19,6 +19,8 @@ jobs:
         run: shellcheck -x scripts/*.sh tests/*.sh tests/fakes/docker
       - name: action.yml is valid YAML
         run: python3 -c "import yaml; yaml.safe_load(open('action.yml'))"
+      - name: No file names the old home
+        run: bash scripts/check-names.sh
 
   conformance:
     name: Conformance — envelope schema, transport, edge cases

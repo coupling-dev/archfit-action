@@ -184,6 +184,33 @@ for fixture in "$results"/*.json; do
 		"$(sed -n "s/^| \`${name//\//\\/}\` | \`\([0-9a-f]\{64\}\)\` |\$/\1/p" "$root/tests/fixtures/SOURCE.md")" "$(sha_of "$fixture")"
 done
 
+# --- Old names ------------------------------------------------------------------------
+
+begin "the name guard refuses the old home and accepts the new names"
+names=$tmp/names
+# Built from parts, so this file does not name the old home itself.
+old_owner=$(printf '%s-%s' alexei led) major=4
+git init --quiet "$names"
+guard() { (cd "$names" && bash "$root/scripts/check-names.sh") >/dev/null 2>&1; }
+guard_refuses() { ! guard; }
+name_case() { # LINE: the only tracked text in the scratch repository
+	printf '%s\n' "$1" >"$names/README.md"
+	git -C "$names" add README.md
+}
+for old in \
+	"uses: $old_owner/archfit-action@$f1 # v$major.0.0" \
+	"image: ghcr.io/$old_owner/archfit@$ENGINE_DIGEST" \
+	"brew install $old_owner/tap/archfit" \
+	"go install github.com/coupling-dev/archfit/v$major/cmd/archfit@v$major.0.0"; do
+	name_case "$old"
+	expect "refuses: $old" guard_refuses
+done
+name_case "uses: coupling-dev/archfit-action@$f1 # v0.9.0 by $old_owner"
+expect "accepts the new names and a login" guard
+mkdir -p "$tmp/not-a-repo"
+expect "fails outside a git repository" bash -c '! (cd "$1" && bash "$2/scripts/check-names.sh") >/dev/null 2>&1' _ "$tmp/not-a-repo" "$root"
+expect "this repository names no old home" bash -c 'cd "$1" && bash scripts/check-names.sh' _ "$root"
+
 # --- One check per trigger ------------------------------------------------------------
 
 begin "pull request: the head is checked, the policy is the target tip's blob, envelope 2 and upload"
@@ -232,7 +259,7 @@ expect "the mounts: checkout, read-only git and policy, and an isolated writable
 	--arg p "$RUNNER_TEMP/archfit/policy/.archfit.yaml"
 expect "the image is pinned by digest and never pulled implicitly" \
 	json_ok '.image == $i and (.options | index("never")) != null' "$(engine_call check)" \
-	--arg i "ghcr.io/alexei-led/archfit@$ENGINE_DIGEST"
+	--arg i "ghcr.io/coupling-dev/archfit@$ENGINE_DIGEST"
 expect_eq "one upload" 1 "$(requests upload)"
 expect_eq "route" /v1/reports "$(upload_field 0 .path)"
 expect_eq "the header carries the envelope file byte for byte" "$(<"$envelope")" "$(upload_field 0 .envelope)"
@@ -815,7 +842,7 @@ expect "the error names the permission" log_has "id-token: write"
 
 # --- Engine identity: the one engine this release pins --------------------------------
 
-for unsupported in v3.4.0 v4.0.0-rc.1 v4.0.0-rc.2; do
+for unsupported in v4.0.0 v5.0.0 v0.9.0-rc.1; do
 	begin "engine $unsupported is refused before the checkout"
 	on_push "$c2"
 	export ARCHFIT_ENGINE_VERSION=$unsupported
@@ -828,7 +855,7 @@ done
 
 begin "an image tag is refused before any work"
 on_push "$c2"
-export ARCHFIT_IMAGE_DIGEST=v4.0.0
+export ARCHFIT_IMAGE_DIGEST=v0.9.0
 run_action "$origin"
 expect_eq "the action fails" 1 "$action_rc"
 expect "the error refuses tags" log_has "tags are refused"
@@ -850,7 +877,7 @@ for arch in X64 ARM64; do
 	expect_eq "the envelope names them" "$ENGINE_VERSION $pinned $platform" \
 		"$(envelope_field engine_version) $(envelope_field image_digest) $(envelope_field platform)"
 	expect "the image is pulled by that digest" json_ok \
-		'.image == $i' "$(engine_call check)" --arg i "ghcr.io/alexei-led/archfit@$pinned"
+		'.image == $i' "$(engine_call check)" --arg i "ghcr.io/coupling-dev/archfit@$pinned"
 done
 
 for arch in X64 ARM64; do

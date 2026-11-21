@@ -55,7 +55,7 @@ commit_all() { # DIR MESSAGE
 }
 
 # write_module DIR: a Go module whose package a imports package b, a package c, and the
-# version 3 policy that allows a -> b and denies a -> c.
+# version 1 policy that allows a -> b and denies a -> c.
 write_module() {
 	mkdir -p "$1/pkg/a" "$1/pkg/b" "$1/pkg/c"
 	printf 'module example.com/single\n\ngo 1.21\n' >"$1/go.mod"
@@ -80,7 +80,7 @@ package c
 func Hi() string { return "hi" }
 EOF
 	cat >"$1/.archfit.yaml" <<'EOF'
-version: 3
+version: 1
 owners: [acme-owner]
 modules:
   a:
