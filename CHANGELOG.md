@@ -18,9 +18,14 @@
 
 1. Wait until the App lists this Action commit in its 0.9.0 manifest. The App
    accepts a result only from a commit it lists.
-2. Set `.archfit.yaml` to policy `version: 1`.
-3. In `.github/workflows/archfit.yaml`, change the `uses:` line to
-   `coupling-dev/archfit-action@<commit> # v0.9.0`.
+2. In one pull request that changes nothing else:
+   1. Set `.archfit.yaml` to policy `version: 1`.
+   2. In `.github/workflows/archfit.yaml`, change the `uses:` line to
+      `coupling-dev/archfit-action@<commit> # v0.9.0`.
+
+   Its check is `unknown` until an owner approves it.
+3. An owner approves the pull request in the App; after the merge, the owner
+   confirms the new policy.
 
 ## v4.0.0 — 2026-11-15
 
