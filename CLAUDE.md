@@ -124,4 +124,4 @@ in `archfit`, the current design for the engine, this Action and the App.
   they replay are ones the engine emitted, hash-pinned in `tests/fixtures/SOURCE.md`
   with the engine commit, never a stub written to match this action.
 - A new check proves it can fail: the validator has known-bad envelopes it must reject.
-- Releases are tagged `vN`; the App pins a commit SHA.
+- Releases are tagged `vX.Y.Z` (from `v0.9.0`); the App pins a commit SHA.

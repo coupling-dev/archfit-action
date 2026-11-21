@@ -15,7 +15,17 @@ set -euo pipefail
 
 pattern='alexei-led/(archfit|homebrew-tap|tap/archfit)|ghcr\.io/alexei-led|archfit/v[0-9]+([^[:alnum:]_]|$)'
 
-if git grep -n -I -E "$pattern" -- ':!scripts/check-names.sh'; then
+# git grep exits 1 when nothing matches; any other failure must not pass as clean.
+rc=0
+git grep -n -I -E "$pattern" -- ':!scripts/check-names.sh' || rc=$?
+case $rc in
+0)
 	echo "check-names: the lines above name the old home; use the names in section 3 of the beta plan" >&2
 	exit 1
-fi
+	;;
+1) ;;
+*)
+	echo "check-names: git grep failed ($rc)" >&2
+	exit "$rc"
+	;;
+esac

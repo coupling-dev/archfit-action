@@ -207,6 +207,8 @@ for old in \
 done
 name_case "uses: coupling-dev/archfit-action@$f1 # v0.9.0 by $old_owner"
 expect "accepts the new names and a login" guard
+mkdir -p "$tmp/not-a-repo"
+expect "fails outside a git repository" bash -c '! (cd "$1" && bash "$2/scripts/check-names.sh") >/dev/null 2>&1' _ "$tmp/not-a-repo" "$root"
 expect "this repository names no old home" bash -c 'cd "$1" && bash scripts/check-names.sh' _ "$root"
 
 # --- One check per trigger ------------------------------------------------------------
