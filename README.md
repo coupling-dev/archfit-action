@@ -8,8 +8,9 @@ remembered for the next change.
 
 The Archfit Action checks the change against the target branch's policy on your
 GitHub Actions runner and, when configured, sends the result to the Archfit App.
-See the [archfit README](https://github.com/coupling-dev/archfit#readme) for how
-the check and request work.
+The App receives the result; it does not run the engine on your code. See the
+[archfit README](https://github.com/coupling-dev/archfit#readme) for how the
+check and request work.
 
 ## Workflow
 
@@ -33,7 +34,7 @@ jobs:
   archfit:
     runs-on: ubuntu-latest
     steps:
-      - uses: coupling-dev/archfit-action@<40-hex-commit> # v4.0.0
+      - uses: coupling-dev/archfit-action@<40-hex-commit> # v0.9.0
         with:
           endpoint: https://app.coupling.dev
           audience: https://app.coupling.dev

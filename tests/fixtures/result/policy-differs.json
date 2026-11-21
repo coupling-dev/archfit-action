@@ -17,13 +17,13 @@
   ],
   "policy": {
     "path": ".archfit.yaml",
-    "digest": "sha256:8989072027bf2c8678c0a5d04a8bf379283890cbfdf99df5663319a52be7ca50",
+    "digest": "sha256:05ace513236f9fd9e36c41bd9f2e7b8e176b8a994e8562cc89adbca55700b976",
     "protected": false,
     "differs": true,
     "target": "refs/remotes/origin/main"
   },
-  "base": "821b2f49c5976f80cd84560cbf75801933e1614f",
-  "head": "3fe056559cd258f40d4dccc7db0db71dac0793c1",
-  "date": "2026-11-15",
-  "engine": "4.0.0"
+  "base": "57f833442bced5245f4ced2cc8b0498ea9c1a3de",
+  "head": "0453e8da5ec18c0e6942bae68b48533f3092d319",
+  "date": "2026-11-21",
+  "engine": "0.9.0"
 }

@@ -232,7 +232,7 @@ expect "the mounts: checkout, read-only git and policy, and an isolated writable
 	--arg p "$RUNNER_TEMP/archfit/policy/.archfit.yaml"
 expect "the image is pinned by digest and never pulled implicitly" \
 	json_ok '.image == $i and (.options | index("never")) != null' "$(engine_call check)" \
-	--arg i "ghcr.io/alexei-led/archfit@$ENGINE_DIGEST"
+	--arg i "ghcr.io/coupling-dev/archfit@$ENGINE_DIGEST"
 expect_eq "one upload" 1 "$(requests upload)"
 expect_eq "route" /v1/reports "$(upload_field 0 .path)"
 expect_eq "the header carries the envelope file byte for byte" "$(<"$envelope")" "$(upload_field 0 .envelope)"
@@ -815,7 +815,7 @@ expect "the error names the permission" log_has "id-token: write"
 
 # --- Engine identity: the one engine this release pins --------------------------------
 
-for unsupported in v3.4.0 v4.0.0-rc.1 v4.0.0-rc.2; do
+for unsupported in v4.0.0 v5.0.0 v0.9.0-rc.1; do
 	begin "engine $unsupported is refused before the checkout"
 	on_push "$c2"
 	export ARCHFIT_ENGINE_VERSION=$unsupported
@@ -828,7 +828,7 @@ done
 
 begin "an image tag is refused before any work"
 on_push "$c2"
-export ARCHFIT_IMAGE_DIGEST=v4.0.0
+export ARCHFIT_IMAGE_DIGEST=v0.9.0
 run_action "$origin"
 expect_eq "the action fails" 1 "$action_rc"
 expect "the error refuses tags" log_has "tags are refused"
@@ -850,7 +850,7 @@ for arch in X64 ARM64; do
 	expect_eq "the envelope names them" "$ENGINE_VERSION $pinned $platform" \
 		"$(envelope_field engine_version) $(envelope_field image_digest) $(envelope_field platform)"
 	expect "the image is pulled by that digest" json_ok \
-		'.image == $i' "$(engine_call check)" --arg i "ghcr.io/alexei-led/archfit@$pinned"
+		'.image == $i' "$(engine_call check)" --arg i "ghcr.io/coupling-dev/archfit@$pinned"
 done
 
 for arch in X64 ARM64; do

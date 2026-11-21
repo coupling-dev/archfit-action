@@ -1,29 +1,24 @@
 # Fixture provenance
 
-These files are the unchanged results emitted by the first published archfit
-`v4.0.0` image, source commit `37dd38244081ad1159c27515cec94560f3e44e30`. They were
-captured from that `linux/amd64` per-platform image
-`ghcr.io/alexei-led/archfit@sha256:3edf066717390ef79f8ae42974c62ccbd93a5bb6b9bc571cbf1dcf9c9ae0fc26`.
+These files are the unchanged results emitted by the archfit `v0.9.0` image, source
+commit `15c1ed40fe86c49a2fafc72c911541370ea5e27f`, published by
+[release run 44885896968](https://github.com/coupling-dev/archfit/actions/runs/44885896968).
+The image is `ghcr.io/coupling-dev/archfit:v0.9.0`, pinned in `scripts/lib.sh` by its
+per-platform digests:
 
-`v4.0.0` was published again from source commit `9715378a421af060962f737ed6aaf6096c26f57b`
-([release run 43741387062](https://github.com/alexei-led/archfit/actions/runs/43741387062))
-when the Go module moved to `/v4`; the engine code and this result contract did not
-change, so these five files were not re-captured. The pinned-image smoke job runs the
-current image through the same scenarios, and the Action's pinned digests name it:
-`linux/amd64` is `sha256:be1eac8f73513c6d0ef4ff17a78255629e4e4bc2d1b3e044b49afcbfdd6aac29`.
-The rebuild details are in [image-identity.json](https://github.com/alexei-led/archfit/releases/download/v4.0.0/image-identity.json).
+- `linux/amd64` `sha256:e841f7b519e5d4a787407887f784f121dff9801c25d0bc892695d783d7805db4`
+- `linux/arm64` `sha256:3e8739e40375e711f3cecd2d44f2dad60b05b94602479d0aff5a598e1adeed9f`
 
-The `Pinned engine image (linux/amd64)` job in [Action CI run 43696615582](https://github.com/alexei-led/archfit-action/actions/runs/43696615582)
-ran `bash tests/engine-smoke.sh` with `ARCHFIT_FIXTURES_OUT` set, then uploaded
-`engine-fixtures-amd64`. That script builds the scratch repositories and captures
-these five scenarios. The image version is `v4.0.0`; each result names `4.0.0`.
-The same run passed the smoke test on `linux/arm64` using its own image digest.
-The engine release was published by [release run 43695907192](https://github.com/alexei-led/archfit/actions/runs/43695907192).
+They were captured from the `linux/arm64` image with
+`RUNNER_ARCH=ARM64 ARCHFIT_FIXTURES_OUT=<dir> bash tests/engine-smoke.sh`, which builds
+the scratch repositories and writes these five scenarios. Each result names engine
+`0.9.0`. The `Pinned engine image` CI jobs run the same scenarios on both platforms and
+upload what they capture as `engine-fixtures-amd64` and `engine-fixtures-arm64`.
 
 | File | SHA-256 |
 | --- | --- |
-| `result/eol-differs.json` | `8d622af3dcad988b46782dd0eed9b90cc82734562d7b87310ccef07f81299e29` |
-| `result/fail.json` | `098b3e62f1a4dfc11917156ca601405b427a32f244144d73b573392ea61536dc` |
-| `result/pass.json` | `6f5903f068ac42384920738d454dbba5cc00576554ca5adae40df86b5aa85223` |
-| `result/policy-differs.json` | `a49716d231e7b36c0e6981496a1a10f6f44dfe1cf20ddc2c2c9df818fd3ab5bc` |
-| `result/push-at-tip.json` | `b45d4d22e77f4e5b71c86a746c2f0fa85403b4d97e3397752094b860f4c4c1ea` |
+| `result/eol-differs.json` | `48b55d9ccea9c99b6eb4877d8ed751399f6c9290a2ee3a9ec2c708941dbbd3e7` |
+| `result/fail.json` | `0f215af1e4a66fc30eea1f440dceedb6f49f08cbdb039688da475489824df27c` |
+| `result/pass.json` | `25c96f9e2e60c19d349a97e8de302877823eae4d125499ccc3fb894598561974` |
+| `result/policy-differs.json` | `8694311d8ed2b36bce5d7c7705faed63e616ea6078f56d6182c527c55a1eec1c` |
+| `result/push-at-tip.json` | `7ad1f857e0f00abc6a680c2c49aa5ae214ccb65f5a75d9c461bc480586982b01` |

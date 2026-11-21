@@ -3,13 +3,13 @@
 # shellcheck disable=SC2034 # the constants are read by the scripts that source this file
 
 # The engine image. The image-digest input selects the build inside it.
-readonly ENGINE_IMAGE_REPO=ghcr.io/alexei-led/archfit
+readonly ENGINE_IMAGE_REPO=ghcr.io/coupling-dev/archfit
 # The only engine release this action runs (the App's manifest names its image digests).
-readonly SUPPORTED_ENGINE_VERSION=v4.0.0
+readonly SUPPORTED_ENGINE_VERSION=v0.9.0
 # Its per-platform manifest digests, used when the workflow names no image-digest. The
 # multi-arch index digest is never used: the App's manifest lists one digest per platform.
-readonly ENGINE_DIGEST_AMD64=sha256:be1eac8f73513c6d0ef4ff17a78255629e4e4bc2d1b3e044b49afcbfdd6aac29
-readonly ENGINE_DIGEST_ARM64=sha256:3ac782cb5acd177ab1225ce5f68d8b77acea71d0a0cf724c8ecd429cc180fbff
+readonly ENGINE_DIGEST_AMD64=sha256:e841f7b519e5d4a787407887f784f121dff9801c25d0bc892695d783d7805db4
+readonly ENGINE_DIGEST_ARM64=sha256:3e8739e40375e711f3cecd2d44f2dad60b05b94602479d0aff5a598e1adeed9f
 # The engine result contract this action carries (`archfit check --format json`).
 readonly RESULT_SCHEMA=archfit.result.v1
 
