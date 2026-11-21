@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.9.0 — 2026-11-21
+
+### Changed
+
+- New home: `coupling-dev/archfit-action`. The Action and the engine restart their
+  version numbers at 0.9.0.
+- Pins engine `v0.9.0` from `ghcr.io/coupling-dev/archfit`: `linux/amd64`
+  `sha256:e841f7b519e5d4a787407887f784f121dff9801c25d0bc892695d783d7805db4` and
+  `linux/arm64` `sha256:3e8739e40375e711f3cecd2d44f2dad60b05b94602479d0aff5a598e1adeed9f`.
+  Every other engine version, v4.0.0 included, is refused.
+- The engine reads policy `version: 1` only.
+- CI fails when a file names the old repositories, image, tap or a `/vN` module
+  path (`scripts/check-names.sh`).
+
+### Upgrade
+
+1. Wait until the App lists this Action commit in its 0.9.0 manifest. The App
+   accepts a result only from a commit it lists.
+2. Set `.archfit.yaml` to policy `version: 1`.
+3. In `.github/workflows/archfit.yaml`, change the `uses:` line to
+   `coupling-dev/archfit-action@<commit> # v0.9.0`.
+
 ## v4.0.0 — 2026-11-15
 
 ### Changed
