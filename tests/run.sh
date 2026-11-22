@@ -626,7 +626,6 @@ expect_eq "the action succeeds: the App's check carries the status" 0 "$action_r
 expect_eq "verdict" fail "$(out verdict)"
 expect "the step summary gives the App's status" summary_has "accepted the result (200): status fail"
 cp "$GITHUB_STEP_SUMMARY" "$tmp/fail-summary"
-(cd "$root/tests/validate" && ARCHFIT_SUMMARY_DIR="$tmp" go test -run TestRenderedSummaries -count=1)
 
 begin "exit code and status disagree: refused, nothing sent"
 on_pull_request "$f1" "$c2"
@@ -827,7 +826,9 @@ for message in absent X; do
 	expected_summary="archfit: the App did not receive this result: this account is not admitted to the Archfit beta yet.
 $line"
 	expect_eq "exact beta summary" "$expected_summary" "$(sed -n '/^archfit: the App did not receive this result:/,$p' "$GITHUB_STEP_SUMMARY")"
+	if [[ $message == absent ]]; then cp "$GITHUB_STEP_SUMMARY" "$tmp/beta-closed-summary"; fi
 done
+(cd "$root/tests/validate" && ARCHFIT_SUMMARY_DIR="$tmp" go test -run TestRenderedSummaries -count=1)
 
 for refusal in '403 workflow_path' '404 not_installed'; do
 	read -r status code <<<"$refusal"
