@@ -1,0 +1,57 @@
+config
+architecture file
+classification
+component
+approved pair
+edge
+relation
+law
+intent
+decision
+guardrail
+waiver
+baseline entry
+debt
+temporary decision
+finding
+violation
+blocker
+problem
+task
+gate
+scan
+blocked
+denied
+needs attention
+healthy
+decision request
+CR
+accept
+decline
+architect
+approver
+rating
+score
+analysis
+insight
+proposal
+void
+voided
+outside the flow
+YAML edit
+edit the YAML
+envelope
+digest
+hash
+sha
+reload
+refresh the page
+behind
+update branch
+admin merge
+squash
+rebase
+stale
+rung
+surface
+PR
