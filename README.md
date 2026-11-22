@@ -88,6 +88,7 @@ protection. Check the App's setup guidance for its availability.
   the job succeeds with a notice and the job summary links to installation
   (GitHub Actions has no neutral job conclusion). The App's `archfit/gate`
   check appears after installation.
+- If the account is not admitted to the closed beta, the job succeeds with a notice and the summary explains how to request access.
 - It checks the image version and platform before analysis. It does not forward
   credentials to the container. The checkout's `.git` and target policy copy are
   read-only; an isolated cache prevents the change from supplying cached facts.
