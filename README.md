@@ -10,7 +10,8 @@ The Archfit Action checks the change against the target branch's policy on your
 GitHub Actions runner and, when configured, sends the result to the Archfit App.
 The App receives the result; it does not run the engine on your code. See the
 [archfit README](https://github.com/coupling-dev/archfit#readme) for how the
-check and request work.
+check and request work. To try the full route on a pull request, follow
+[Try it on your pull request](https://github.com/coupling-dev/archfit/blob/main/docs/try-it-on-your-pull-request.md).
 
 ## Workflow
 
