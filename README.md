@@ -14,7 +14,7 @@ check and request work.
 
 ## Workflow
 
-The App or `archfit init` can prepare the workflow. Place it at
+The App can prepare the workflow; `archfit init` does not write it. Place it at
 `.github/workflows/archfit.yaml` so the App can identify it:
 
 ```yaml
