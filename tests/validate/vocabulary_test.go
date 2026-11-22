@@ -74,7 +74,7 @@ func TestRenderedSummaries(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, state := range []string{"pass", "fail"} {
+	for _, state := range []string{"pass", "fail", "beta-closed"} {
 		t.Run(state, func(t *testing.T) {
 			data, err := os.ReadFile(dir + "/" + state + "-summary")
 			if err != nil {
