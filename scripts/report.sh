@@ -175,7 +175,11 @@ code=$(app_value .error "$APP_TOKEN")
 
 if [[ $status == 403 ]] && jq -e --arg code "$APP_NOT_INSTALLED" '.error == $code' <<<"$answer_json" >/dev/null; then
 	notice "the App is not installed on this repository; the upload was refused."
-	summary "Install the App: $APP_INSTALL_URL"
+	install_url=$APP_INSTALL_URL
+	if [[ ${GITHUB_REPOSITORY_OWNER_ID:-} =~ ^[0-9]+$ && ${GITHUB_REPOSITORY_ID:-} =~ ^[0-9]+$ ]]; then
+		install_url+="/permissions?suggested_target_id=$GITHUB_REPOSITORY_OWNER_ID&repository_ids[]=$GITHUB_REPOSITORY_ID"
+	fi
+	summary "Install the App: $install_url"
 	exit 0
 fi
 
