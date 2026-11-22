@@ -29,6 +29,7 @@ trap 'stop_app; rm -rf "$tmp"' EXIT
 schema=$root/schema/envelope.v2.schema.json
 validator=$tmp/validate
 build_validator "$validator"
+(cd "$root/tests/validate" && go test ./...)
 
 # Fakes on PATH: the engine image and the backoff clock.
 mkdir -p "$tmp/bin"

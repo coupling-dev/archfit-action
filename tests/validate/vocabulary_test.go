@@ -1,0 +1,66 @@
+package main
+
+import (
+	"crypto/sha256"
+	"fmt"
+	"os"
+	"reflect"
+	"regexp"
+	"strings"
+	"testing"
+)
+
+func TestVocabulary(t *testing.T) {
+	b, err := os.ReadFile("../vocabulary/not-used.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		text string
+		want []string
+	}{
+		{"A CLASSIFICATION", []string{"classification"}},
+		{"architecture   \n file", []string{"architecture file"}},
+		{"SPRINT", nil},
+		{"archfit/gate gate:", nil},
+		{"gate", []string{"gate"}},
+	} {
+		if got := vocabularyMatches(string(b), tc.text); !reflect.DeepEqual(got, tc.want) {
+			t.Errorf("%q: got %v want %v", tc.text, got, tc.want)
+		}
+	}
+}
+
+func TestVocabularyDrift(t *testing.T) {
+	b, err := os.ReadFile("../vocabulary/not-used.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		data  []byte
+		valid bool
+	}{{b, true}, {append(append([]byte{}, b...), 'x'), false}, {nil, false}} {
+		if got := vocabularyValid(tc.data); got != tc.valid {
+			t.Errorf("valid = %v, want %v", got, tc.valid)
+		}
+	}
+}
+
+const vocabularySHA256 = "1627c09f272d057762684b52290a9006e5dc78080e56de551cfde11a1f492d10"
+
+func vocabularyValid(data []byte) bool {
+	return len(data) > 0 && fmt.Sprintf("%x", sha256.Sum256(data)) == vocabularySHA256
+}
+
+func vocabularyMatches(list, text string) []string {
+	text = regexp.MustCompile(`(?i)archfit/gate|\bgate:`).ReplaceAllString(text, " ")
+	var found []string
+	for _, word := range strings.Split(strings.TrimSpace(list), "\n") {
+		phrase := strings.Join(strings.Fields(regexp.QuoteMeta(word)), `\s+`)
+		pattern := regexp.MustCompile(`(?i)(^|[^\pL\pN_])` + phrase + `($|[^\pL\pN_])`)
+		if pattern.MatchString(text) {
+			found = append(found, word)
+		}
+	}
+	return found
+}
