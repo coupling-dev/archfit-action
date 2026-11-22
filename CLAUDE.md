@@ -102,8 +102,9 @@ in `archfit`, the current design for the engine, this Action and the App.
   pins this action by commit; a tag inside it would make that commit's behaviour mutable.
 - **Retries only on 429, 5xx and no answer.** 409 (`stale_run`, `stale_head`,
   `stale_group`) means superseded (exit 0): a newer run uploads its own, and the App
-  writes nothing for this one. Every other answer is final. `Retry-After` counts only as
-  1-4 decimal digits; else backoff.
+  writes nothing for this one. HTTP 403 with `not_installed` is a final refusal
+  but exits 0 with a notice and an install link in the job summary. Every other
+  answer is final. `Retry-After` counts only as 1-4 decimal digits; else backoff.
 - **Fork pull requests cannot hold `id-token: write`.** They are checked and kept as
   an artifact, never uploaded. Do not add a fallback that makes them look enforceable.
 - **The release pins the engine.** `engine-version` and `image-digest` are optional:

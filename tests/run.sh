@@ -774,6 +774,31 @@ expect "the error names the App's code" log_has "HTTP 400 envelope_invalid"
 expect "the error gives the recovery" log_has "action commit the App pins"
 expect_eq "app-answer" '{"error":"envelope_invalid"}' "$(out app-answer)"
 
+install_line='Install the App: https://github.com/apps/archfit-review/installations/new'
+
+begin "403 not_installed: final, succeeds with an install notice"
+on_push "$c2"
+start_app '[{"status": 403, "body": {"error": "not_installed"}}]'
+run_action "$origin"
+expect_eq "the action succeeds" 0 "$action_rc"
+expect_eq "one upload" 1 "$(requests upload)"
+expect_eq "app-status" 403 "$(out app-status)"
+expect_eq "app-answer" '{"error":"not_installed"}' "$(out app-answer)"
+expect "the notice says the App is not installed" log_has "::notice::the App is not installed"
+expect_eq "one exact install line" "$install_line" "$(grep -F 'Install the App:' "$GITHUB_STEP_SUMMARY")"
+
+for refusal in '403 installation_not_approved' '404 not_installed'; do
+	read -r status code <<<"$refusal"
+	begin "$refusal: still fails"
+	on_push "$c2"
+	start_app "[{\"status\": $status, \"body\": {\"error\": \"$code\"}}]"
+	run_action "$origin"
+	expect_eq "the action fails" 1 "$action_rc"
+	expect_eq "one upload" 1 "$(requests upload)"
+	expect "the summary says the upload was refused" summary_has "refused the upload: HTTP $status $code"
+	expect "no install line" bash -c '! grep -qF "Install the App:" "$1"' _ "$GITHUB_STEP_SUMMARY"
+done
+
 begin "403 workflow_path: final, the hint names the fixed workflow"
 on_push "$c2"
 start_app '[{"status": 403, "body": {"error": "workflow_path"}}]'

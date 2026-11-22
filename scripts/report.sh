@@ -22,6 +22,8 @@ readonly ENVELOPE_MAX_BYTES=8192
 readonly MAX_ATTEMPTS=5
 readonly RETRY_BUDGET_SECONDS=300
 readonly RETRY_AFTER_CAP_SECONDS=120
+readonly APP_NOT_INSTALLED=not_installed
+readonly APP_INSTALL_URL=https://github.com/apps/archfit-review/installations/new
 
 facts=${ARCHFIT_FACTS:?}
 endpoint=${ARCHFIT_ENDPOINT:-}
@@ -171,13 +173,19 @@ readonly APP_TOKEN='^[a-z_]{1,64}$'
 code=$(app_value .error "$APP_TOKEN")
 [[ $code != '(unexpected value)' ]] || code=""
 
+if [[ $status == 403 ]] && jq -e --arg code "$APP_NOT_INSTALLED" '.error == $code' <<<"$answer_json" >/dev/null; then
+	notice "the App is not installed on this repository; the upload was refused."
+	summary "Install the App: $APP_INSTALL_URL"
+	exit 0
+fi
+
 hint() {
 	case $code in
 	envelope_missing | envelope_invalid) echo "Use the action commit the App pins in the generated workflow." ;;
 	token_missing) echo "The job needs 'permissions: id-token: write'." ;;
 	token_invalid) echo "The OIDC audience ($audience) must equal the App base URL exactly." ;;
 	repository_mismatch) echo "The OIDC token and the envelope name different repositories." ;;
-	not_installed) echo "Install the archfit GitHub App on this repository." ;;
+	"$APP_NOT_INSTALLED") echo "Install the archfit GitHub App on this repository." ;;
 	installation_not_approved) echo "The App does not admit this installation yet." ;;
 	workflow_path) echo "Run archfit from .github/workflows/archfit.yaml as that workflow's own job, not as a reusable workflow." ;;
 	run_not_found | run_mismatch) echo "Run the workflow again." ;;

@@ -84,6 +84,10 @@ protection. Check the App's setup guidance for its availability.
   receives the same bytes with its envelope 2 and decides the `archfit/gate`
   check. A successful upload is not necessarily a passing check. The engine
   statuses are `pass`, `fail`, and `unknown`; the App can also show `waiting`.
+- If the App refuses the upload because it is not installed on this repository,
+  the job succeeds with a notice and the job summary links to installation
+  (GitHub Actions has no neutral job conclusion). The App's `archfit/gate`
+  check appears after installation.
 - It checks the image version and platform before analysis. It does not forward
   credentials to the container. The checkout's `.git` and target policy copy are
   read-only; an isolated cache prevents the change from supplying cached facts.
