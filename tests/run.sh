@@ -809,7 +809,23 @@ $next"
 	expect_eq "exact installation summary" "$expected_summary" "$(sed -n '/^archfit: the App did not receive this result:/,$p' "$GITHUB_STEP_SUMMARY")"
 done
 
-for refusal in '403 installation_not_approved' '404 not_installed'; do
+for message in absent X; do
+	begin "403 installation_not_approved ($message): succeeds with beta notice"
+	on_push "$c2"
+	body='{"error":"installation_not_approved"}'
+	if [[ $message != absent ]]; then body='{"error":"installation_not_approved","message":"X"}'; fi
+	start_app "[{\"status\":403,\"body\":$body}]"
+	run_action "$origin"
+	expect_eq "the action succeeds" 0 "$action_rc"
+	expect "beta notice" log_has "::notice::"
+	line=$message
+	if [[ $message == absent ]]; then line="Archfit is in a closed beta. Ask for access: https://github.com/coupling-dev/archfit/issues/new?template=beta-access.yml"; fi
+	expected_summary="archfit: the App did not receive this result: this account is not admitted to the Archfit beta yet.
+$line"
+	expect_eq "exact beta summary" "$expected_summary" "$(sed -n '/^archfit: the App did not receive this result:/,$p' "$GITHUB_STEP_SUMMARY")"
+done
+
+for refusal in '403 workflow_path' '404 not_installed'; do
 	read -r status code <<<"$refusal"
 	begin "$refusal: still fails"
 	on_push "$c2"
@@ -818,6 +834,7 @@ for refusal in '403 installation_not_approved' '404 not_installed'; do
 	expect_eq "the action fails" 1 "$action_rc"
 	expect_eq "one upload" 1 "$(requests upload)"
 	expect "the summary says the upload was refused" summary_has "refused the upload: HTTP $status $code"
+	expect "no beta line" bash -c '! grep -qF "closed beta" "$1"' _ "$GITHUB_STEP_SUMMARY"
 	expect "no install line" bash -c '! grep -qF "Install the App:" "$1"' _ "$GITHUB_STEP_SUMMARY"
 done
 
