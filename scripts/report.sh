@@ -179,7 +179,22 @@ if [[ $status == 403 ]] && jq -e --arg code "$APP_NOT_INSTALLED" '.error == $cod
 	if [[ ${GITHUB_REPOSITORY_OWNER_ID:-} =~ ^[0-9]+$ && ${GITHUB_REPOSITORY_ID:-} =~ ^[0-9]+$ ]]; then
 		install_url+="/permissions?suggested_target_id=$GITHUB_REPOSITORY_OWNER_ID&repository_ids[]=$GITHUB_REPOSITORY_ID"
 	fi
-	summary "Install the App: $install_url"
+	run_url=""
+	if [[ -n ${GITHUB_SERVER_URL:-} && -n ${GITHUB_REPOSITORY:-} && -n ${GITHUB_RUN_ID:-} ]]; then
+		run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+	fi
+	if [[ $(fact event) == pull_request ]]; then
+		next="After you install it, the App checks this pull request again."
+		if [[ -n $run_url ]]; then
+			next+=" If no archfit/gate check appears within a minute, re-run this job: $run_url"
+		fi
+	elif [[ -n $run_url ]]; then
+		next="After you install it, re-run this job: $run_url"
+	else
+		next="After you install it, re-run this job."
+	fi
+	summary "archfit: the App did not receive this result: it is not installed on this repository." \
+		"Install the App: $install_url" "$next"
 	exit 0
 fi
 

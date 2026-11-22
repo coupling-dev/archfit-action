@@ -775,22 +775,38 @@ expect "the error gives the recovery" log_has "action commit the App pins"
 expect_eq "app-answer" '{"error":"envelope_invalid"}' "$(out app-answer)"
 
 install_base=https://github.com/apps/archfit-review/installations/new
-for ids in '123:456' '123:' ':456'; do
+run_url=https://github.com/acme/shop/actions/runs/17654321098
+for scenario in 'pull_request 123:456 https://github.com' 'pull_request 123:' \
+	'merge_group :456 https://github.com' 'push 123:456'; do
+	read -r event ids server_url <<<"$scenario"
 	IFS=: read -r owner_id repo_id <<<"$ids"
 	install_url=$install_base
 	if [[ -n $owner_id && -n $repo_id ]]; then
 		install_url="$install_base/permissions?suggested_target_id=123&repository_ids[]=456"
 	fi
-	begin "403 not_installed (owner=${owner_id:-missing}, repository=${repo_id:-missing}): final, succeeds with an install notice"
-	on_push "$c2"
+	begin "403 not_installed ($scenario): final, succeeds with an install notice"
+	case $event in
+	pull_request) on_pull_request "$f1" "$c2" ;;
+	merge_group) on_merge_group "$gc" "$c2" ;;
+	push) on_push "$c2" ;;
+	esac
 	start_app '[{"status": 403, "body": {"error": "not_installed"}}]'
-	GITHUB_REPOSITORY_OWNER_ID=$owner_id GITHUB_REPOSITORY_ID=$repo_id run_action "$origin"
+	GITHUB_SERVER_URL=$server_url GITHUB_REPOSITORY_OWNER_ID=$owner_id GITHUB_REPOSITORY_ID=$repo_id run_action "$origin"
 	expect_eq "the action succeeds" 0 "$action_rc"
 	expect_eq "one upload" 1 "$(requests upload)"
 	expect_eq "app-status" 403 "$(out app-status)"
 	expect_eq "app-answer" '{"error":"not_installed"}' "$(out app-answer)"
 	expect "the notice says the App is not installed" log_has "::notice::the App is not installed"
-	expect_eq "one exact install line" "Install the App: $install_url" "$(grep -F 'Install the App:' "$GITHUB_STEP_SUMMARY")"
+	case "$event:$server_url" in
+	pull_request:) next="After you install it, the App checks this pull request again." ;;
+	pull_request:*) next="After you install it, the App checks this pull request again. If no archfit/gate check appears within a minute, re-run this job: $run_url" ;;
+	*:) next="After you install it, re-run this job." ;;
+	*) next="After you install it, re-run this job: $run_url" ;;
+	esac
+	expected_summary="archfit: the App did not receive this result: it is not installed on this repository.
+Install the App: $install_url
+$next"
+	expect_eq "exact installation summary" "$expected_summary" "$(sed -n '/^archfit: the App did not receive this result:/,$p' "$GITHUB_STEP_SUMMARY")"
 done
 
 for refusal in '403 installation_not_approved' '404 not_installed'; do
